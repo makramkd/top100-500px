@@ -17,13 +17,20 @@ class SessionsController < ApplicationController
     find_query = User.find_by_provider_and_uid(auth['provider'], auth['uid'].to_s)
     user = nil
     if find_query
-      user = find_query.first
+      user = find_query
     else
       user = User.create_with_omniauth_hash(auth)
     end
 
+    # simple logging to make sure info is there
+    logger.debug "User attributes: provider: #{user.provider}, name: #{user.name}, uid: #{user.uid}."
+
     # reset the session parameters
+    reset_session
+
+    # set the user id of the current session
     session[:user_id] = user.id
+
     redirect_to root_url, notice: 'Logged in!'
   end
 
