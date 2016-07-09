@@ -1,19 +1,19 @@
 Rails.application.routes.draw do
-  get 'showcase/index'
+  root 'showcase#index'
 
-  get 'showcase/help'
+  get '/about', to: 'showcase#about'
 
-  get 'showcase/about'
+  get '/help', to: 'showcase#help'
 
-  get 'showcase/contact'
+  get '/contact', to: 'showcase#contact'
 
-  get 'sessions/new'
+  get '/login', to: 'sessions#new', as: :login
 
-  get 'sessions/create'
+  get '/auth/:provider/callback', to: 'sessions#create'
 
-  get 'sessions/failure'
+  get '/auth/failure', to: 'sessions#failure'
 
-  get 'sessions/destroy'
+  get '/logout', to: 'sessions#destroy', as: :logout
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
