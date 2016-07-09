@@ -14,6 +14,7 @@ gem 'coffee-rails', '~> 4.1.0'
 # gem 'therubyracer', platforms: :ruby
 
 # gems for oauth
+# use this gem for easy authentication for user sign-in
 gem 'omniauth-500px'
 
 gem 'figaro'
