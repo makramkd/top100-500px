@@ -7,3 +7,14 @@
 <p id="notice">
   <%= notice %>
 </p>
+
+<!-- Render images in rows of 4 columns -->
+<% @image_urls.in_groups_of(4, false).each do |group| %>
+    <div class="row">
+      <% group.each do |image_url| %>
+          <div class="col-xs-12 col-md-3">
+            <%= image_tag image_url, class: 'img-responsive' %>
+          </div>
+      <% end %>
+    </div>
+<% end %>
