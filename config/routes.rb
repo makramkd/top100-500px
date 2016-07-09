@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  get 'showcase/index'
+
+  get 'showcase/help'
+
+  get 'showcase/about'
+
+  get 'showcase/contact'
+
   get 'sessions/new'
 
   get 'sessions/create'
