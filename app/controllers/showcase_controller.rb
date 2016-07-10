@@ -4,12 +4,46 @@ class ShowcaseController < ApplicationController
     access_token = create_access_token
 
     # get the 100 most popular photos
-    response = create_api_request access_token,
-                                  "/photos?feature=popular&sort=created_at&rpp=100&image_size=3&include_store=store_download&include_states=voted"
+    response = create_api_get_request access_token,
+                                      "/photos?feature=popular&sort=rating&rpp=100&image_size=3&include_store=store_download&include_states=voted"
 
     # set the image_urls member so that we can render the photos
     # in the view
-    @image_urls = image_urls response
+    @image_id_url_array = image_urls response
+  end
+
+  def favorite_photo
+    image_id = params[:img_id]
+
+    logger.debug session.inspect
+
+    user_access_token = session[:user_access_token]
+    user_access_token_secret = session[:user_access_token_secret]
+    user_actual_access_token = session[:user_actual_access_token]
+
+    # make sure we have the right information to send a post request
+    if !user_actual_access_token.nil?
+      consumer = OAuth::Consumer.new CONSUMER_KEY, CONSUMER_SECRET, {
+          :site               => BASE_URL,
+          :request_token_path => REQUEST_TOKEN_PATH,
+          :access_token_path  => ACCESS_TOKEN_PATH,
+          :authorize_path     => AUTHORIZE_PATH
+      }
+
+      # since we already have the access token from oauth we use that to get a new
+      # access token
+      access_token = OAuth::AccessToken.new consumer, session[:user_access_token].to_s,
+          session[:user_access_token_secret].to_s
+
+      # make the post request
+      create_api_post_request access_token, "/photos/#{image_id}/favorite"
+
+      redirect_to root_url, notice: 'Favorited photo!'
+    else
+      # TODO add a good way to show that we are unauthorized
+      # (maybe don't even show the button - i think thats best)
+      logger.debug 'Not authorized yet: please login'
+    end
   end
 
   def help
@@ -51,8 +85,17 @@ class ShowcaseController < ApplicationController
     access_token
   end
 
-  def create_api_request(access_token, request)
+  # create a get request and return the body of the response.
+  # this is used to get the top 100 photos
+  def create_api_get_request(access_token, request)
     response = access_token.get request
+    response.body
+  end
+
+  # create a post request and return the body of the response
+  # this is intended to be used with a "favorite" action on the app
+  def create_api_post_request(access_token, request)
+    response = access_token.post request
     response.body
   end
 
@@ -61,7 +104,7 @@ class ShowcaseController < ApplicationController
     photos_json_array = parsed_json["photos"]
     image_url_array = []
     photos_json_array.each { |photo|
-      image_url_array << photo["image_url"]
+      image_url_array << [photo['id'], photo["image_url"]]
     }
 
     image_url_array
