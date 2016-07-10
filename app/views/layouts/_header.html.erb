@@ -8,7 +8,7 @@
         <% if session[:user_id].nil? %>
         <li><%= link_to 'Log In', '/auth/500px' %></li>
         <% else %>
-        <li><%= link_to 'Logged In', '#'%></li>
+        <li><%= link_to 'Log Out', '/logout'%></li>
         <% end %>
       </ul>
     </nav>
