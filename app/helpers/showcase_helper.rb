@@ -1,2 +1,3 @@
 module ShowcaseHelper
+
 end

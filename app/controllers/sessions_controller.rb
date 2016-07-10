@@ -31,7 +31,14 @@ class SessionsController < ApplicationController
     # set the user id of the current session
     session[:user_id] = user.id
 
-    redirect_to root_url, notice: 'Logged in!'
+    # set other important oauth info (this is in order to do favorites correctly)
+    session[:user_access_token] = auth['credentials']['token']
+    session[:user_access_token_secret] = auth['credentials']['secret']
+    session[:user_actual_access_token] = auth['extra']['access_token']
+
+    logger.debug "Access token info: token: #{session[:user_access_token].to_s}, secret: #{session[:user_access_token_secret].to_s}."
+
+    redirect_to root_url, notice: "Welcome, #{user.name}!"
   end
 
   def failure
