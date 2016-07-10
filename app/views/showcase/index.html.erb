@@ -7,8 +7,10 @@
 <p id="notice">
   <% if session[:user_id].nil? %>
       <b>Note:</b> you are not logged in. Please login to be able to favorite photos in the showcase.
-  <% else %>
+  <% elsif notice.nil? %>
   Welcome to the Top 100 Showcase from 500px's Popular stream!
+  <% else %>
+  <%= notice %>
   <% end %>
 </p>
 
@@ -16,10 +18,12 @@
 <% @image_id_url_array.in_groups_of(4, false).each do |group| %>
     <div class="row">
       <% group.each do |(image_id, image_url)| %>
-          <div class="col-xs-12 col-md-3 show-image">
+          <div class="col-xs-12 col-md-3 center-block">
             <%= image_tag image_url, class: 'img-responsive' %>
             <% if session[:user_id] %>
-            <%= button_to 'Favorite', { action: 'favorite_photo', img_id: image_id }, { :class => 'btn btn-default' } %>
+                <div class="text-center">
+                  <%= button_to 'Favorite', { action: 'favorite_photo', img_id: image_id }, { :class => 'btn btn-default' } %>
+                </div>
             <% end %>
           </div>
       <% end %>
