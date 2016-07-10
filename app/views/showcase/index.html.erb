@@ -18,11 +18,15 @@
 <% @image_id_url_array.in_groups_of(4, false).each do |group| %>
     <div class="row">
       <% group.each do |(image_id, image_url)| %>
-          <div class="col-xs-12 col-md-3 center-block">
+          <div class="col-xs-12 col-md-3 center-block padded-from-top">
             <%= image_tag image_url, class: 'img-responsive' %>
             <% if session[:user_id] %>
                 <div class="text-center">
-                  <%= button_to 'Favorite', { action: 'favorite_photo', img_id: image_id }, { :class => 'btn btn-default' } %>
+                  <!-- We have to create the action manually in order to be able to use a <button> tag instead
+                       of the <input> tag for submit. -->
+                  <%= button_to create_favorite_action(image_id), data: {:img_id => image_id}, method: :post, class: 'btn btn-primary' do %>
+                  <span class="glyphicon glyphicon-star"></span> Favorite Photo
+                  <% end %>
                 </div>
             <% end %>
           </div>
