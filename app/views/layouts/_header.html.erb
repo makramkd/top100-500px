@@ -5,7 +5,11 @@
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to "Home", root_path %></li>
         <li><%= link_to "Help", help_path %></li>
+        <% if session[:user_id].nil? %>
         <li><%= link_to "Log in", '/auth/500px' %></li>
+        <% else %>
+        <li>Logged In.</li>
+        <% end %>
       </ul>
     </nav>
   </div>
